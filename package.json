@@ -1,0 +1,28 @@
+{
+  "name": "asana-clone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon v1/src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cerensolpan/asana-clone.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cerensolpan/asana-clone/issues"
+  },
+  "homepage": "https://github.com/cerensolpan/asana-clone#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "helmet": "^4.6.0",
+    "http-status": "^1.5.0",
+    "mongoose": "^6.0.12",
+    "nodemon": "^2.0.14"
+  }
+}
