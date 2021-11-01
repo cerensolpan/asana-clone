@@ -13,5 +13,5 @@ app.use(helmet());
 
 app.listen(process.env.APP_PORT, ()=>{
     console.log("Start..");
-    app.use("/projects",ProjectRoutes.router)
+    app.use("/projects",ProjectRoutes)
 })

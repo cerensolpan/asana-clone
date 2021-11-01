@@ -5,6 +5,7 @@ const ProjectSchema = new Mongoose.Schema({
     //     type: Mongoose.Types.ObjectId,
     //     ref: "user"
     // }
-})
+},
+{timestamps: true, versionKey: false})
 
 module.exports = Mongoose.model("project", ProjectSchema)
