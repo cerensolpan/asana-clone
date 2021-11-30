@@ -1,11 +1,11 @@
 const Project = require("../models/Projects")
-const insert = (projectData)=>{
-    const projects = Project(projectData);
+const insert = (data)=>{
+    const projects = Project(data);
     return projects.save();
 }
 
 const list = () => {
-    Project.find({});
+   return Project.find({});
 }
 module.exports = {
     insert,
