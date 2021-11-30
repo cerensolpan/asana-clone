@@ -1,0 +1,3 @@
+{"level":"info","message":{"_id":"6198ec2ff0c862a7b03cecba","createdAt":"2021-11-20T12:38:07.082Z","updatedAt":"2021-11-20T12:38:07.082Z"},"service":"user-service"}
+{"level":"info","message":{"_id":"619ff8fb7fa5446dd635f56f","createdAt":"2021-11-25T20:58:35.493Z","updatedAt":"2021-11-25T20:58:35.493Z"},"service":"project-service"}
+{"level":"info","message":{"_id":"619ff9347fa5446dd635f571","createdAt":"2021-11-25T20:59:32.559Z","updatedAt":"2021-11-25T20:59:32.559Z"},"service":"project-service"}
