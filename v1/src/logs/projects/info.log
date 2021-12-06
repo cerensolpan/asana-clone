@@ -4,3 +4,9 @@
 {"level":"info","message":{"_id":"61a943711b44f724fdae791c","createdAt":"2021-12-02T22:06:41.076Z","updatedAt":"2021-12-02T22:06:41.076Z"},"service":"project-service"}
 {"level":"info","message":{"_id":"61a943f11b44f724fdae791e","createdAt":"2021-12-02T22:08:49.574Z","updatedAt":"2021-12-02T22:08:49.574Z"},"service":"project-service"}
 {"level":"info","message":{"_id":"61a943f51b44f724fdae7920","createdAt":"2021-12-02T22:08:53.164Z","updatedAt":"2021-12-02T22:08:53.164Z"},"service":"project-service"}
+{"level":"info","message":{"_id":"61ae7943add9de1a0294a5ab","createdAt":"2021-12-06T20:57:39.802Z","name":"Project 1","updatedAt":"2021-12-06T20:57:39.802Z"},"service":"project-service"}
+{"level":"info","message":{"_id":"61ae794aadd9de1a0294a5ad","createdAt":"2021-12-06T20:57:46.452Z","name":"Project 2","updatedAt":"2021-12-06T20:57:46.452Z"},"service":"project-service"}
+{"level":"info","message":{"_id":"61ae7956add9de1a0294a5af","createdAt":"2021-12-06T20:57:58.264Z","name":"Project 3","updatedAt":"2021-12-06T20:57:58.264Z"},"service":"project-service"}
+{"level":"info","message":{"_id":"61ae7959add9de1a0294a5b1","createdAt":"2021-12-06T20:58:01.905Z","name":"Project 4","updatedAt":"2021-12-06T20:58:01.905Z"},"service":"project-service"}
+{"level":"info","message":{"_id":"61ae7bf6bc9f976eb879b191","createdAt":"2021-12-06T21:09:10.917Z","name":"Project 5","updatedAt":"2021-12-06T21:09:10.917Z"},"service":"project-service"}
+{"level":"info","message":{"_id":"61ae7c04387e3fa225e38a05","createdAt":"2021-12-06T21:09:24.983Z","name":"Project 6","updatedAt":"2021-12-06T21:09:24.983Z","user_id":"61a68953f9163356a38c61bf"},"service":"project-service"}
