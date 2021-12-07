@@ -4,21 +4,22 @@ const insert = (data)=>{
     return projects.save();
 }
 
-const modify = () => {
-    return Project.find({}).populate({
+const list = (where) => {
+    return Project.find(where || {}).populate({
         path: "user_id",
         select:"full_name email"
     });
 }
 
-const list = (data,id) => {
-   return Project.findById(id).then(project=>{
-       project.name = data?.name
-       return project.save();
-   })
+const modify = (data,id) => {
+    return Project.findByIdAndUpdate(id,data,{new:true}); 
+//     return Project.findById(id).then(project=>{
+//        project.name = data?.name
+//        return project.save();
+//    })
 }
-module.exports = {
+module.exports = {  
     insert,
-    modify,
-    list
+    list,
+    modify
 }

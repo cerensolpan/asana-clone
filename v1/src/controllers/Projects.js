@@ -23,12 +23,16 @@ const create = (req,res) => {
 }
 
 const update = (req,res) => {
-    console.log('req.params.id :>> ', req.params.id);
     if(!req.params?.id){
         return res.status(httpStatus.BAD_REQUEST).send({
             message: "ID Bilgisi Eksik."
         })
     }
+    modify(req.body,req.params?.id)
+        .then((updatedProject)=>{
+        res.status(httpStatus.OK).send(updatedProject)
+    })
+    .catch((e)=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Kayıt sırasında bir problem oluştu."}))
 }
 
 module.exports = {
