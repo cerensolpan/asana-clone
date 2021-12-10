@@ -13,7 +13,12 @@ const list = () => {
 }
 
 const modify =(where,data)=>{
-    return User.findOneAndUpdate(where,data,{new:true});
+    //Gelen data üzerinden bilgileri filtrelemek. Bu işlemi JOI bizim için yapıyor.
+    const updateData = Object.keys(data).reduce((obj,key)=>{
+        if(key !== "password") obj[key]=data[key];
+        return obj;
+    },{})
+    return User.findOneAndUpdate(where,updateData,{new:true});
 }
 module.exports = {
     insert,
