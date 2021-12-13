@@ -18,8 +18,13 @@ const modify = (data,id) => {
 //        return project.save();
 //    })
 }
+
+const remove = (id) => {
+    return Project.findByIdAndDelete(id); 
+}
 module.exports = {  
     insert,
     list,
-    modify
+    modify,
+    remove
 }

@@ -1,4 +1,4 @@
-const {insert, list, loginUser, modify} = require("../services/Users");
+const {insert, list, loginUser, modify, remove} = require("../services/Users");
 const projectService = require("../services/Projects");
 const httpStatus = require("http-status");
 const {passwordToHash, generateAccessToken, generateRefreshToken} = require("../scripts/utils/helper");
@@ -70,7 +70,37 @@ const resetPassword = (req,res) => {
     .catch(()=>res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Şifre resetleme sırasında bir problem oluştu."}))
 }
 
+const deleteUser = (req,res) =>{
+    if(!req.params?.id){
+        return res.status(httpStatus.BAD_REQUEST).send({
+             message: "ID Bilgisi Eksik."
+        })
+    }
+    remove(req.params?.id)
+        .then((deletedUser)=>{
+            if(!deletedUser){
+                return res.status(httpStatus.NOT_FOUND).send({
+                    message:"Böyle bir kayıt bulunmamaktadır."
+                })
+            }
+            res.status(httpStatus.OK).send({
+                message:"Kayıt silinmiştir."
+            }
+         )
+    })
+    .catch((e)=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Silme işlemi sırasında bir problem oluştu."}))
+}
+
 const update = (req,res) => {
+    modify({_id: req.user?._id},req.body)
+    .then(updatedUser=>{
+        res.status(httpStatus.OK).send(updatedUser)
+    }).catch(()=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Güncelleme işlemi sırasında bir problem oluştu."}))
+}
+
+const changePassword = (req,res) => {
+    req.body.password = passwordToHash(req.body.password);
+    // TODO: UI geldikten sonra şifre karşılaştırmalarına ilişkin kurallar burada yer alacaktır.
     modify({_id: req.user?._id},req.body)
     .then(updatedUser=>{
         res.status(httpStatus.OK).send(updatedUser)
@@ -83,5 +113,7 @@ module.exports = {
     login,
     projectList,
     resetPassword,
-    update
+    deleteUser,
+    update,
+    changePassword
 }
