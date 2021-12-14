@@ -4,6 +4,7 @@ const httpStatus = require("http-status");
 const {passwordToHash, generateAccessToken, generateRefreshToken} = require("../scripts/utils/helper");
 const uuid= require("uuid");
 const eventEmitter = require("../scripts/events/eventEmitter")
+const path = require("path");
 
 const create = (req,res) => {
     req.body.password = passwordToHash(req.body.password);
@@ -107,6 +108,32 @@ const changePassword = (req,res) => {
     }).catch(()=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Güncelleme işlemi sırasında bir problem oluştu."}))
 }
 
+const updateProfileImage = (req,res) => {
+    // 1-Image Control 
+    // console.log('__dirname :>> ', __dirname); 
+
+    // Change directory
+    // console.log('path.join(__dirname,"../","uploads/users) :>> ', path.join(__dirname,"../","uploads/users"))
+    if(!req?.files?.profile_image){
+        return res.status(httpStatus.BAD_REQUEST).send({ error:"Bu işlemi yapabilmek içi yeterli veriye sahip değilsiniz." })
+    }
+
+    // 2-Upload 
+    const extension = path.extname(req.files.profile_image.name)
+    const fileName = `${req?.user._id}${extension}`
+    const folderPath = path.join(__dirname,"../","uploads/users",fileName);
+    req.files.profile_image.mv(folderPath, function (err){
+        if(err) return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: err});
+        // 3-DB save 
+        modify({_id: req.user._id},{profile_image:fileName})
+        .then(updatedUser=>{
+             // 4-Responses
+            res.status(httpStatus.OK).send(updatedUser)
+        }).catch(e=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Upload Başarılı fakat kayıt sırasında bir problem oluştu."}))
+    }); 
+   
+}
+  
 module.exports = {
     create,
     index,
@@ -115,5 +142,6 @@ module.exports = {
     resetPassword,
     deleteUser,
     update,
-    changePassword
+    changePassword,
+    updateProfileImage
 }
