@@ -54,9 +54,20 @@ const deleteTask = (req,res) =>{
     .catch((e)=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Silme işlemi sırasında bir problem oluştu."}))
 }
 
+const makeComment = (req,res) => {
+    req.body.user_id = req.user;
+    req.body.commented_at = new Date();
+    modify(req.body,req.params?.id)
+        .then((updatedDoc)=>{
+        res.status(httpStatus.OK).send(updatedDoc)
+    })
+    .catch((e)=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Kayıt sırasında bir problem oluştu."}))
+}
+
 module.exports = {
     index,
     create,
     update,
-    deleteTask
+    deleteTask,
+    makeComment
 }
