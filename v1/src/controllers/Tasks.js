@@ -73,10 +73,27 @@ const makeComment = (req,res) => {
     .catch((e)=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Kayıt sırasında bir problem oluştu."}))
 }
 
+const deleteComment = (req,res) => {
+    console.log('req.params.commentId :>> ', req.params.commentId);
+    findOne({ _id: req.params.id}).then(mainTask=>{
+        console.log('mainTask.comments :>> ', mainTask.comments);
+        if(!mainTask) return res.status(httpStatus.NOT_FOUND).send({ message: "Böyle bir kayıt bulunmamaktadır."})
+        mainTask.comments = mainTask.comments.filter((c)=> c._id?.toString() !== req.params.commentId)
+        mainTask
+            .save()
+            .then(updatedDoc => {
+                res.status(httpStatus.OK).send(updatedDoc)
+            })
+            .catch((e)=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Kayıt sırasında bir problem oluştu."}))
+    })
+    .catch((e)=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Kayıt sırasında bir problem oluştu."}))
+}
+
 module.exports = {
     index,
     create,
     update,
     deleteTask,
-    makeComment
+    makeComment,
+    deleteComment
 }
