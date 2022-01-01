@@ -74,9 +74,7 @@ const makeComment = (req,res) => {
 }
 
 const deleteComment = (req,res) => {
-    console.log('req.params.commentId :>> ', req.params.commentId);
     findOne({ _id: req.params.id}).then(mainTask=>{
-        console.log('mainTask.comments :>> ', mainTask.comments);
         if(!mainTask) return res.status(httpStatus.NOT_FOUND).send({ message: "Böyle bir kayıt bulunmamaktadır."})
         mainTask.comments = mainTask.comments.filter((c)=> c._id?.toString() !== req.params.commentId)
         mainTask
@@ -89,11 +87,47 @@ const deleteComment = (req,res) => {
     .catch((e)=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Kayıt sırasında bir problem oluştu."}))
 }
 
+const addSubTask = (req,res) => {
+    //Get MainTask
+    if(!req.params.id) return res.status(httpStatus.BAD_REQUEST).send({message: "ID bilgisi gerekli."})
+    findOne({ _id: req.params.id}).then(mainTask=>{
+        if(!mainTask) return res.status(httpStatus.NOT_FOUND).send({ message: "Böyle bir kayıt bulunmamaktadır."})
+        //Create subtask
+        insert({...req.body, user_id:req.user})
+        .then(subTask=>{
+            //Subtask controlled on MainTask and update
+            mainTask.sub_tasks.push(subTask)
+            mainTask
+            .save()
+            .then(updatedDoc => {
+                //Send User
+                res.status(httpStatus.OK).send(updatedDoc)
+            })
+            .catch((e)=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Kayıt sırasında bir problem oluştu."}))
+        })
+        .catch((e)=>{
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e)
+        })
+    })
+    .catch((e)=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Kayıt sırasında bir problem oluştu."}))
+}
+
+const fetchTask = (req,res) => {
+    if(!req.params.id) return res.status(httpStatus.BAD_REQUEST).send({message: "ID bilgisi gerekli."})
+    findOne({ _id: req.params.id},true).then(task=>{
+        if(!task) return res.status(httpStatus.NOT_FOUND).send({ message: "Böyle bir kayıt bulunmamaktadır."})
+        res.status(httpStatus.OK).send(task)
+    })
+    .catch((e)=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Kayıt sırasında bir problem oluştu."}))
+}
+
 module.exports = {
     index,
     create,
     update,
     deleteTask,
     makeComment,
-    deleteComment
+    deleteComment,
+    addSubTask,
+    fetchTask
 }
