@@ -10,6 +10,6 @@ const router = express.Router();
 router.route("/").post(authenticateToken,validate(schemas.createValidation),create);
 router.route("/:id").patch(authenticateToken,validate(schemas.updateValidation),update);
 router.route("/:id").delete(authenticateToken,deleteTask);
-router.route("/:id/make-comment").post(authenticateToken,validate(schemas.updateValidation),makeComment);
+router.route("/:id/make-comment").post(authenticateToken,validate(schemas.commentValidation),makeComment);
 
 module.exports = router
