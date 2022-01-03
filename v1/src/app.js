@@ -6,6 +6,8 @@ const loaders = require("./loaders");
 const events = require("./scripts/events")
 const {ProjectRoutes, UserRoutes, SectionRoutes, TaskRoutes} = require("./api-routes");
 const path = require("path");
+// const BaseService = require("./services/BaseService")
+const Service = require("./services/Service")
 
 config();
 loaders();
@@ -23,4 +25,10 @@ app.listen(process.env.APP_PORT, ()=>{
     app.use("/users",UserRoutes)
     app.use("/sections",SectionRoutes)
     app.use("/tasks",TaskRoutes)
+
+    // const baseService = new BaseService("DEneme");
+    // baseService.getService();
+    const service = new Service("Model");
+    service.getService();
+    service.getService2();
 })
