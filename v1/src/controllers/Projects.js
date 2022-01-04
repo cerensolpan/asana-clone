@@ -1,10 +1,13 @@
-const {insert,modify,list,remove} = require("../services/Projects");
+const {insert,modify,list,remove} = require("../services/Projects_");
 const httpStatus = require("http-status");
+const Service = require("../services/Projects")
+const projectService = new Service();
 
 const index = (req,res) => {
     //    const projects= list().then(x => {return x});
     //    console.log(projects);
-    list()
+    projectService
+        .list()
         .then(response=>{
             res.status(httpStatus.OK).send(response);
         }).catch(e=>res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e))

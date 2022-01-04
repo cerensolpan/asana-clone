@@ -1,30 +1,10 @@
-const Project = require("../models/Projects")
-const insert = (data)=>{
-    const projects = Project(data);
-    return projects.save();
+const BaseService = require ("./BaseService");
+const BaseModel = require("../models/Projects");
+
+class Projects extends BaseService {
+    constructor(){
+        super(BaseModel);
+    }
 }
 
-const list = (where) => {
-    return Project.find(where || {}).populate({
-        path: "user_id",
-        select:"full_name email profile_image"
-    });
-}
-
-const modify = (data,id) => {
-    return Project.findByIdAndUpdate(id,data,{new:true}); 
-//     return Project.findById(id).then(project=>{
-//        project.name = data?.name
-//        return project.save();
-//    })
-}
-
-const remove = (id) => {
-    return Project.findByIdAndDelete(id); 
-}
-module.exports = {  
-    insert,
-    list,
-    modify,
-    remove
-}
+module.exports = Projects;
