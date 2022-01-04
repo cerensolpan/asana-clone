@@ -1,13 +1,12 @@
-const {insert,modify,list,remove} = require("../services/Projects_");
 const httpStatus = require("http-status");
-const Service = require("../services/Projects")
-const projectService = new Service();
+const Service = require("../services/Projects");
+
+const ProjectService = new Service();
 
 const index = (req,res) => {
     //    const projects= list().then(x => {return x});
     //    console.log(projects);
-    projectService
-        .list()
+    ProjectService.list()
         .then(response=>{
             res.status(httpStatus.OK).send(response);
         }).catch(e=>res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e))
@@ -16,7 +15,7 @@ const index = (req,res) => {
 
 const create = (req,res) => {
     req.body.user_id = req.user;
-    insert(req.body)
+    ProjectService.create(req.body)
     .then(response=>{
         res.status(httpStatus.CREATED).send(response);
     })
@@ -31,7 +30,7 @@ const update = (req,res) => {
             message: "ID Bilgisi Eksik."
         })
     }
-    modify(req.body,req.params?.id)
+    ProjectService.update(req.params?.id,req.body)
         .then((updatedProject)=>{
         res.status(httpStatus.OK).send(updatedProject)
     })
@@ -44,7 +43,7 @@ const deleteProject = (req,res) =>{
              message: "ID Bilgisi Eksik."
         })
     }
-    remove(req.params?.id)
+    ProjectService.delete(req.params?.id)
         .then((deletedProject)=>{
             if(!deletedProject){
                 return res.status(httpStatus.NOT_FOUND).send({

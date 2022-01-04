@@ -8,12 +8,18 @@ class BaseService {
         BaseModel = model;
     }
     list(where){
-        return BaseModel?.find(where || {})
+        return BaseModel?.find(where || {});
     }
-    create(data){}
+    create(data){
+        return new BaseModel(data).save();
+    }
     read(where){}
-    update(id,data){}
-    delete(id){}
+    update(id,data){
+        return BaseModel.findByIdAndUpdate(id,data,{new:true}); 
+    }
+    delete(id){
+        return BaseModel.findByIdAndDelete(id);
+    }
 }
 
 module.exports = BaseService;
