@@ -1,9 +1,10 @@
-const {insert,modify,list,remove,findOne} = require("../services/Tasks");
 const httpStatus = require("http-status");
+const Service = require("../services/Tasks.js");
+const TaskService = new Service();
 
 const index = (req,res) => {
     if(!req?.params?.projectId) return res.status(httpStatus.BAD_REQUEST).send({error: "Proje Bilgisi Eksik.."})
-    list({project_id: req.params.projectId})
+    TaskService.list({project_id: req.params.projectId})
         .then(response=>{
             res.status(httpStatus.OK).send(response);
         }).catch(e=>res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e))
@@ -11,7 +12,7 @@ const index = (req,res) => {
 
 const create = (req,res) => {
     req.body.user_id = req.user;
-    insert(req.body)
+    TaskService.create(req.body)
     .then(response=>{
         res.status(httpStatus.CREATED).send(response);
     })
@@ -26,7 +27,7 @@ const update = (req,res) => {
             message: "ID Bilgisi Eksik."
         })
     }
-    modify(req.body,req.params?.id)
+    TaskService.update(req.params?.id,req.body)
         .then((updatedDoc)=>{
         res.status(httpStatus.OK).send(updatedDoc)
     })
@@ -39,7 +40,7 @@ const deleteTask = (req,res) =>{
              message: "ID Bilgisi Eksik."
         })
     }
-    remove(req.params?.id)
+    TaskService.delete(req.params?.id)
         .then((deletedDoc)=>{
             if(!deletedDoc){
                 return res.status(httpStatus.NOT_FOUND).send({
@@ -55,7 +56,7 @@ const deleteTask = (req,res) =>{
 }
 
 const makeComment = (req,res) => {
-    findOne({_id: req.params.id}).then(mainTask=>{
+    TaskService.findOne({_id: req.params.id}).then(mainTask=>{
         if(!mainTask) return res.status(httpStatus.NOT_FOUND).send({ message: "Böyle bir kayıt bulunmamaktadır."})
         const comment = {
             ...req.body,
@@ -74,7 +75,7 @@ const makeComment = (req,res) => {
 }
 
 const deleteComment = (req,res) => {
-    findOne({ _id: req.params.id}).then(mainTask=>{
+    TaskService.findOne({ _id: req.params.id}).then(mainTask=>{
         if(!mainTask) return res.status(httpStatus.NOT_FOUND).send({ message: "Böyle bir kayıt bulunmamaktadır."})
         mainTask.comments = mainTask.comments.filter((c)=> c._id?.toString() !== req.params.commentId)
         mainTask
@@ -90,10 +91,10 @@ const deleteComment = (req,res) => {
 const addSubTask = (req,res) => {
     //Get MainTask
     if(!req.params.id) return res.status(httpStatus.BAD_REQUEST).send({message: "ID bilgisi gerekli."})
-    findOne({ _id: req.params.id}).then(mainTask=>{
+    TaskService.findOne({ _id: req.params.id}).then(mainTask=>{
         if(!mainTask) return res.status(httpStatus.NOT_FOUND).send({ message: "Böyle bir kayıt bulunmamaktadır."})
         //Create subtask
-        insert({...req.body, user_id:req.user})
+        TaskService.create({...req.body, user_id:req.user})
         .then(subTask=>{
             //Subtask controlled on MainTask and update
             mainTask.sub_tasks.push(subTask)
@@ -114,7 +115,7 @@ const addSubTask = (req,res) => {
 
 const fetchTask = (req,res) => {
     if(!req.params.id) return res.status(httpStatus.BAD_REQUEST).send({message: "ID bilgisi gerekli."})
-    findOne({ _id: req.params.id},true).then(task=>{
+    TaskService.findOne({ _id: req.params.id},true).then(task=>{
         if(!task) return res.status(httpStatus.NOT_FOUND).send({ message: "Böyle bir kayıt bulunmamaktadır."})
         res.status(httpStatus.OK).send(task)
     })

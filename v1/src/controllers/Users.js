@@ -1,25 +1,31 @@
-const {insert, list, loginUser, modify, remove} = require("../services/Users");
-const projectService = require("../services/Projects");
+// const {insert, list, loginUser, modify, remove} = require("../services/Users_");
+// const projectService = require("../services/Projects");
 const httpStatus = require("http-status");
 const {passwordToHash, generateAccessToken, generateRefreshToken} = require("../scripts/utils/helper");
 const uuid= require("uuid");
 const eventEmitter = require("../scripts/events/eventEmitter")
 const path = require("path");
 
+const Service = require("../services/Users");
+const UserService = new Service();
+
+const projectService = require("../services/Projects");
+const ProjectService = new projectService();
+
 const create = (req,res) => {
     req.body.password = passwordToHash(req.body.password);
-    insert(req.body)
+    UserService.create(req.body)
     .then(response=>{
         res.status(httpStatus.CREATED).send(response);
     })
     .catch((e)=>{
         res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e)
     })
-}
+} 
 
 const login = (req,res) => {
     req.body.password=passwordToHash(req.body.password);
-    loginUser(req.body)
+    UserService.findOne(req.body)
         .then((user)=> {
             if(!user) {return res.status(httpStatus.NOT_FOUND).send({ message: "Böyle bir kullanıcı bulunmamaktadır."})}
             user={
@@ -36,7 +42,7 @@ const login = (req,res) => {
 }
 
 const index = (req,res) => {
-list()
+    UserService.list()
     .then(response=>{
         res.status(httpStatus.OK).send(response);
     }).catch(e=>res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e))
@@ -44,7 +50,7 @@ list()
 
 const projectList = (req,res) => {
     req.user?._id;
-    projectService
+    ProjectService
     .list({user_id: req.user?._id})
     .then(projects => {
         res.status(httpStatus.OK).send(projects)
@@ -56,7 +62,7 @@ const projectList = (req,res) => {
 
 const resetPassword = (req,res) => {
     const new_password = uuid.v4()?.split("-")[0] || `usr-${new Date().getTime()}`
-    modify({email:req.body.email},{ password: passwordToHash(new_password)})
+    UserService.updateWhere({email:req.body.email},{ password: passwordToHash(new_password)})
     .then((updatedUser)=>{
         if(!updatedUser) return res.status(httpStatus.NOT_FOUND).send({error: "Böyle bir kullanıcı bulunmamaktadır."})
         eventEmitter.emit("send_email",{
@@ -77,7 +83,7 @@ const deleteUser = (req,res) =>{
              message: "ID Bilgisi Eksik."
         })
     }
-    remove(req.params?.id)
+    UserService.delete(req.params?.id)
         .then((deletedUser)=>{
             if(!deletedUser){
                 return res.status(httpStatus.NOT_FOUND).send({
@@ -93,7 +99,7 @@ const deleteUser = (req,res) =>{
 }
 
 const update = (req,res) => {
-    modify({_id: req.user?._id},req.body)
+    UserService.update(req.user?._id,req.body)
     .then(updatedUser=>{
         res.status(httpStatus.OK).send(updatedUser)
     }).catch(()=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Güncelleme işlemi sırasında bir problem oluştu."}))
@@ -102,7 +108,7 @@ const update = (req,res) => {
 const changePassword = (req,res) => {
     req.body.password = passwordToHash(req.body.password);
     // TODO: UI geldikten sonra şifre karşılaştırmalarına ilişkin kurallar burada yer alacaktır.
-    modify({_id: req.user?._id},req.body)
+    UserService.update(req.user?._id,req.body)
     .then(updatedUser=>{
         res.status(httpStatus.OK).send(updatedUser)
     }).catch(()=> res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: "Güncelleme işlemi sırasında bir problem oluştu."}))
@@ -125,7 +131,7 @@ const updateProfileImage = (req,res) => {
     req.files.profile_image.mv(folderPath, function (err){
         if(err) return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error: err});
         // 3-DB save 
-        modify({_id: req.user._id},{profile_image:fileName})
+        UserService.update(req.user._id,{profile_image:fileName})
         .then(updatedUser=>{
              // 4-Responses
             res.status(httpStatus.OK).send(updatedUser)

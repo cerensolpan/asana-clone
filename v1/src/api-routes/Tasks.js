@@ -3,10 +3,11 @@ const validate =require("../middlewares/validate")
 //validations
 const schemas = require("../validations/Tasks")
 const express = require("express");
-const {create,update,deleteTask,makeComment,deleteComment,addSubTask,fetchTask} = require("../controllers/Tasks");
+const {index,create,update,deleteTask,makeComment,deleteComment,addSubTask,fetchTask} = require("../controllers/Tasks");
 const authenticateToken = require("../middlewares/authenticate");
 const router = express.Router();
 
+router.route("/").get(authenticateToken,index);
 router.route("/").post(authenticateToken,validate(schemas.createValidation),create);
 router.route("/:id").patch(authenticateToken,validate(schemas.updateValidation),update);
 router.route("/:id").delete(authenticateToken,deleteTask);
